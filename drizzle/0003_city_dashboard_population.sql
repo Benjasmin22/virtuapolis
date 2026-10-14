@@ -1,0 +1,3 @@
+ALTER TABLE "households" DROP CONSTRAINT "households_population";--> statement-breakpoint
+ALTER TABLE "households" ADD COLUMN "working_age_members" integer DEFAULT 1 NOT NULL;--> statement-breakpoint
+ALTER TABLE "households" ADD CONSTRAINT "households_population" CHECK ("households"."members" > 0 AND "households"."working_age_members" BETWEEN 0 AND "households"."members" AND "households"."workers" BETWEEN 0 AND "households"."working_age_members");

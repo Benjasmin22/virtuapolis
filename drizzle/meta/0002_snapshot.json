@@ -1,0 +1,1306 @@
+{
+  "id": "e994030c-38ee-4414-8b5f-a882b76c41a3",
+  "prevId": "aaf41984-7067-4a59-b8a9-45a9dc06c9ce",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.accounts": {
+      "name": "accounts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "account_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "company_id": {
+          "name": "company_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "accounts_city_id_cities_id_fk": {
+          "name": "accounts_city_id_cities_id_fk",
+          "tableFrom": "accounts",
+          "tableTo": "cities",
+          "columnsFrom": [
+            "city_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "accounts_city_id_household_id_households_city_id_id_fk": {
+          "name": "accounts_city_id_household_id_households_city_id_id_fk",
+          "tableFrom": "accounts",
+          "tableTo": "households",
+          "columnsFrom": [
+            "city_id",
+            "household_id"
+          ],
+          "columnsTo": [
+            "city_id",
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "accounts_city_id_company_id_companies_city_id_id_fk": {
+          "name": "accounts_city_id_company_id_companies_city_id_id_fk",
+          "tableFrom": "accounts",
+          "tableTo": "companies",
+          "columnsFrom": [
+            "city_id",
+            "company_id"
+          ],
+          "columnsTo": [
+            "city_id",
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "accounts_scoped_key": {
+          "name": "accounts_scoped_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "id"
+          ]
+        },
+        "accounts_code_key": {
+          "name": "accounts_code_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "code"
+          ]
+        },
+        "accounts_household_key": {
+          "name": "accounts_household_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "household_id"
+          ]
+        },
+        "accounts_company_key": {
+          "name": "accounts_company_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "company_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "accounts_owner": {
+          "name": "accounts_owner",
+          "value": "(\n    (\"accounts\".\"kind\" = 'HOUSEHOLD_CASH' AND \"accounts\".\"household_id\" IS NOT NULL AND \"accounts\".\"company_id\" IS NULL) OR\n    (\"accounts\".\"kind\" = 'COMPANY_CASH' AND \"accounts\".\"company_id\" IS NOT NULL AND \"accounts\".\"household_id\" IS NULL) OR\n    (\"accounts\".\"kind\" IN ('TREASURY', 'OPENING_EQUITY', 'SUPPLIER_CASH') AND \"accounts\".\"household_id\" IS NULL AND \"accounts\".\"company_id\" IS NULL)\n  )"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.buildings": {
+      "name": "buildings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "building_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "grid_x": {
+          "name": "grid_x",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "grid_y": {
+          "name": "grid_y",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "buildings_city_id_cities_id_fk": {
+          "name": "buildings_city_id_cities_id_fk",
+          "tableFrom": "buildings",
+          "tableTo": "cities",
+          "columnsFrom": [
+            "city_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "buildings_scoped_key": {
+          "name": "buildings_scoped_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "id",
+            "kind"
+          ]
+        },
+        "buildings_grid_key": {
+          "name": "buildings_grid_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "grid_x",
+            "grid_y"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "buildings_grid_nonnegative": {
+          "name": "buildings_grid_nonnegative",
+          "value": "\"buildings\".\"grid_x\" >= 0 AND \"buildings\".\"grid_y\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.cities": {
+      "name": "cities",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'Nova Aurora'"
+        },
+        "kind": {
+          "name": "kind",
+          "type": "city_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'MAIN'"
+        },
+        "current_turn": {
+          "name": "current_turn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "bakery_elasticity_bps": {
+          "name": "bakery_elasticity_bps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 10000
+        },
+        "sales_tax_bps": {
+          "name": "sales_tax_bps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 500
+        },
+        "engine_version": {
+          "name": "engine_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'v1'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "cities_owner_idx": {
+          "name": "cities_owner_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "cities_user_id_users_id_fk": {
+          "name": "cities_user_id_users_id_fk",
+          "tableFrom": "cities",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "cities_owner_kind_key": {
+          "name": "cities_owner_kind_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id",
+            "user_id",
+            "kind"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "cities_turn_nonnegative": {
+          "name": "cities_turn_nonnegative",
+          "value": "\"cities\".\"current_turn\" >= 0"
+        },
+        "cities_rates_bounded": {
+          "name": "cities_rates_bounded",
+          "value": "\"cities\".\"bakery_elasticity_bps\" BETWEEN 0 AND 20000 AND \"cities\".\"sales_tax_bps\" BETWEEN 0 AND 10000"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.companies": {
+      "name": "companies",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "building_id": {
+          "name": "building_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "building_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_cents": {
+          "name": "price_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "0"
+        },
+        "reference_price_cents": {
+          "name": "reference_price_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "0"
+        },
+        "unit_cost_cents": {
+          "name": "unit_cost_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "0"
+        },
+        "weekly_wage_cents": {
+          "name": "weekly_wage_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "0"
+        },
+        "capacity": {
+          "name": "capacity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "employees": {
+          "name": "employees",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "companies_city_id_cities_id_fk": {
+          "name": "companies_city_id_cities_id_fk",
+          "tableFrom": "companies",
+          "tableTo": "cities",
+          "columnsFrom": [
+            "city_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "companies_city_id_building_id_kind_buildings_city_id_id_kind_fk": {
+          "name": "companies_city_id_building_id_kind_buildings_city_id_id_kind_fk",
+          "tableFrom": "companies",
+          "tableTo": "buildings",
+          "columnsFrom": [
+            "city_id",
+            "building_id",
+            "kind"
+          ],
+          "columnsTo": [
+            "city_id",
+            "id",
+            "kind"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "companies_scoped_key": {
+          "name": "companies_scoped_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "id"
+          ]
+        },
+        "companies_building_key": {
+          "name": "companies_building_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "building_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "companies_kind": {
+          "name": "companies_kind",
+          "value": "\"companies\".\"kind\" IN ('BAKERY', 'BANK')"
+        },
+        "companies_nonnegative": {
+          "name": "companies_nonnegative",
+          "value": "\"companies\".\"price_cents\" >= 0 AND \"companies\".\"reference_price_cents\" >= 0 AND \"companies\".\"unit_cost_cents\" >= 0 AND \"companies\".\"weekly_wage_cents\" >= 0 AND \"companies\".\"capacity\" >= 0 AND \"companies\".\"employees\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.households": {
+      "name": "households",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "building_id": {
+          "name": "building_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "building_kind": {
+          "name": "building_kind",
+          "type": "building_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'RESIDENCE'"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "members": {
+          "name": "members",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "workers": {
+          "name": "workers",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "weekly_bread_units": {
+          "name": "weekly_bread_units",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 10
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "households_city_id_cities_id_fk": {
+          "name": "households_city_id_cities_id_fk",
+          "tableFrom": "households",
+          "tableTo": "cities",
+          "columnsFrom": [
+            "city_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "households_city_id_building_id_building_kind_buildings_city_id_id_kind_fk": {
+          "name": "households_city_id_building_id_building_kind_buildings_city_id_id_kind_fk",
+          "tableFrom": "households",
+          "tableTo": "buildings",
+          "columnsFrom": [
+            "city_id",
+            "building_id",
+            "building_kind"
+          ],
+          "columnsTo": [
+            "city_id",
+            "id",
+            "kind"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "households_scoped_key": {
+          "name": "households_scoped_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "id"
+          ]
+        },
+        "households_building_key": {
+          "name": "households_building_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "building_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "households_residence": {
+          "name": "households_residence",
+          "value": "\"households\".\"building_kind\" = 'RESIDENCE'"
+        },
+        "households_population": {
+          "name": "households_population",
+          "value": "\"households\".\"members\" > 0 AND \"households\".\"workers\" BETWEEN 0 AND \"households\".\"members\""
+        },
+        "households_bread_nonnegative": {
+          "name": "households_bread_nonnegative",
+          "value": "\"households\".\"weekly_bread_units\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.ledger_entries": {
+      "name": "ledger_entries",
+      "schema": "",
+      "columns": {
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "side": {
+          "name": "side",
+          "type": "entry_side",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount_cents": {
+          "name": "amount_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "ledger_entries_account_idx": {
+          "name": "ledger_entries_account_idx",
+          "columns": [
+            {
+              "expression": "city_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "account_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "ledger_entries_city_id_transaction_id_ledger_transactions_city_id_id_fk": {
+          "name": "ledger_entries_city_id_transaction_id_ledger_transactions_city_id_id_fk",
+          "tableFrom": "ledger_entries",
+          "tableTo": "ledger_transactions",
+          "columnsFrom": [
+            "city_id",
+            "transaction_id"
+          ],
+          "columnsTo": [
+            "city_id",
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ledger_entries_city_id_account_id_accounts_city_id_id_fk": {
+          "name": "ledger_entries_city_id_account_id_accounts_city_id_id_fk",
+          "tableFrom": "ledger_entries",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "city_id",
+            "account_id"
+          ],
+          "columnsTo": [
+            "city_id",
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "ledger_entries_transaction_id_side_pk": {
+          "name": "ledger_entries_transaction_id_side_pk",
+          "columns": [
+            "transaction_id",
+            "side"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "ledger_entries_positive": {
+          "name": "ledger_entries_positive",
+          "value": "\"ledger_entries\".\"amount_cents\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.ledger_transactions": {
+      "name": "ledger_transactions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "turn": {
+          "name": "turn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_key": {
+          "name": "event_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_account_id": {
+          "name": "source_account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "destination_account_id": {
+          "name": "destination_account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount_cents": {
+          "name": "amount_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nature": {
+          "name": "nature",
+          "type": "transaction_nature",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "ledger_transactions_city_id_cities_id_fk": {
+          "name": "ledger_transactions_city_id_cities_id_fk",
+          "tableFrom": "ledger_transactions",
+          "tableTo": "cities",
+          "columnsFrom": [
+            "city_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "ledger_transactions_city_id_turn_turn_runs_city_id_turn_fk": {
+          "name": "ledger_transactions_city_id_turn_turn_runs_city_id_turn_fk",
+          "tableFrom": "ledger_transactions",
+          "tableTo": "turn_runs",
+          "columnsFrom": [
+            "city_id",
+            "turn"
+          ],
+          "columnsTo": [
+            "city_id",
+            "turn"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ledger_transactions_city_id_source_account_id_accounts_city_id_id_fk": {
+          "name": "ledger_transactions_city_id_source_account_id_accounts_city_id_id_fk",
+          "tableFrom": "ledger_transactions",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "city_id",
+            "source_account_id"
+          ],
+          "columnsTo": [
+            "city_id",
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ledger_transactions_city_id_destination_account_id_accounts_city_id_id_fk": {
+          "name": "ledger_transactions_city_id_destination_account_id_accounts_city_id_id_fk",
+          "tableFrom": "ledger_transactions",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "city_id",
+            "destination_account_id"
+          ],
+          "columnsTo": [
+            "city_id",
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "ledger_transactions_scoped_key": {
+          "name": "ledger_transactions_scoped_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "id"
+          ]
+        },
+        "ledger_transactions_event_key": {
+          "name": "ledger_transactions_event_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "turn",
+            "event_key"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "ledger_transactions_positive": {
+          "name": "ledger_transactions_positive",
+          "value": "\"ledger_transactions\".\"amount_cents\" > 0"
+        },
+        "ledger_transactions_distinct_accounts": {
+          "name": "ledger_transactions_distinct_accounts",
+          "value": "\"ledger_transactions\".\"source_account_id\" <> \"ledger_transactions\".\"destination_account_id\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.scenario_runs": {
+      "name": "scenario_runs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "base_city_id": {
+          "name": "base_city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "base_city_kind": {
+          "name": "base_city_kind",
+          "type": "city_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'MAIN'"
+        },
+        "fork_city_id": {
+          "name": "fork_city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fork_city_kind": {
+          "name": "fork_city_kind",
+          "type": "city_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'LAB'"
+        },
+        "base_turn": {
+          "name": "base_turn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "experiment": {
+          "name": "experiment",
+          "type": "experiment_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "interest_delta_bps": {
+          "name": "interest_delta_bps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "cost_shock_bps": {
+          "name": "cost_shock_bps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "public_budget_delta_cents": {
+          "name": "public_budget_delta_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "0"
+        },
+        "status": {
+          "name": "status",
+          "type": "scenario_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'READY'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "scenario_runs_user_id_users_id_fk": {
+          "name": "scenario_runs_user_id_users_id_fk",
+          "tableFrom": "scenario_runs",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "scenario_runs_base_city_id_user_id_base_city_kind_cities_id_user_id_kind_fk": {
+          "name": "scenario_runs_base_city_id_user_id_base_city_kind_cities_id_user_id_kind_fk",
+          "tableFrom": "scenario_runs",
+          "tableTo": "cities",
+          "columnsFrom": [
+            "base_city_id",
+            "user_id",
+            "base_city_kind"
+          ],
+          "columnsTo": [
+            "id",
+            "user_id",
+            "kind"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "scenario_runs_fork_city_id_user_id_fork_city_kind_cities_id_user_id_kind_fk": {
+          "name": "scenario_runs_fork_city_id_user_id_fork_city_kind_cities_id_user_id_kind_fk",
+          "tableFrom": "scenario_runs",
+          "tableTo": "cities",
+          "columnsFrom": [
+            "fork_city_id",
+            "user_id",
+            "fork_city_kind"
+          ],
+          "columnsTo": [
+            "id",
+            "user_id",
+            "kind"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "scenario_runs_fork_city_id_unique": {
+          "name": "scenario_runs_fork_city_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "fork_city_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "scenario_runs_isolated": {
+          "name": "scenario_runs_isolated",
+          "value": "\"scenario_runs\".\"base_city_id\" <> \"scenario_runs\".\"fork_city_id\" AND \"scenario_runs\".\"base_city_kind\" = 'MAIN' AND \"scenario_runs\".\"fork_city_kind\" = 'LAB'"
+        },
+        "scenario_runs_turn_nonnegative": {
+          "name": "scenario_runs_turn_nonnegative",
+          "value": "\"scenario_runs\".\"base_turn\" >= 0"
+        },
+        "scenario_runs_cost_floor": {
+          "name": "scenario_runs_cost_floor",
+          "value": "\"scenario_runs\".\"cost_shock_bps\" >= -10000"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.turn_runs": {
+      "name": "turn_runs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "turn": {
+          "name": "turn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "request_key": {
+          "name": "request_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "turn_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "report": {
+          "name": "report",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "turn_runs_city_id_cities_id_fk": {
+          "name": "turn_runs_city_id_cities_id_fk",
+          "tableFrom": "turn_runs",
+          "tableTo": "cities",
+          "columnsFrom": [
+            "city_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "turn_runs_week_key": {
+          "name": "turn_runs_week_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "turn"
+          ]
+        },
+        "turn_runs_request_key": {
+          "name": "turn_runs_request_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id",
+            "request_key"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "turn_runs_nonnegative": {
+          "name": "turn_runs_nonnegative",
+          "value": "\"turn_runs\".\"turn\" >= 0"
+        },
+        "turn_runs_completion": {
+          "name": "turn_runs_completion",
+          "value": "(\"turn_runs\".\"status\" = 'COMPLETED') = (\"turn_runs\".\"completed_at\" IS NOT NULL AND \"turn_runs\".\"report\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.account_kind": {
+      "name": "account_kind",
+      "schema": "public",
+      "values": [
+        "HOUSEHOLD_CASH",
+        "COMPANY_CASH",
+        "TREASURY",
+        "OPENING_EQUITY",
+        "SUPPLIER_CASH"
+      ]
+    },
+    "public.building_kind": {
+      "name": "building_kind",
+      "schema": "public",
+      "values": [
+        "RESIDENCE",
+        "BAKERY",
+        "BANK",
+        "CITY_HALL"
+      ]
+    },
+    "public.city_kind": {
+      "name": "city_kind",
+      "schema": "public",
+      "values": [
+        "MAIN",
+        "LAB"
+      ]
+    },
+    "public.entry_side": {
+      "name": "entry_side",
+      "schema": "public",
+      "values": [
+        "DEBIT",
+        "CREDIT"
+      ]
+    },
+    "public.experiment_kind": {
+      "name": "experiment_kind",
+      "schema": "public",
+      "values": [
+        "INTEREST_CREDIT",
+        "BAKERY_COST",
+        "PUBLIC_BUDGET"
+      ]
+    },
+    "public.scenario_status": {
+      "name": "scenario_status",
+      "schema": "public",
+      "values": [
+        "READY",
+        "COMPLETED",
+        "ARCHIVED"
+      ]
+    },
+    "public.transaction_nature": {
+      "name": "transaction_nature",
+      "schema": "public",
+      "values": [
+        "OPENING",
+        "PURCHASE",
+        "WAGE",
+        "TAX",
+        "TRANSFER",
+        "LOAN",
+        "REPAYMENT",
+        "INTEREST"
+      ]
+    },
+    "public.turn_status": {
+      "name": "turn_status",
+      "schema": "public",
+      "values": [
+        "PENDING",
+        "COMPLETED"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

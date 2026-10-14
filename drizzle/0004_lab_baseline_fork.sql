@@ -1,0 +1,4 @@
+ALTER TABLE "scenario_runs" ADD COLUMN "baseline_fork_city_id" uuid;--> statement-breakpoint
+ALTER TABLE "scenario_runs" ADD CONSTRAINT "scenario_runs_baseline_fork_city_id_user_id_fork_city_kind_cities_id_user_id_kind_fk" FOREIGN KEY ("baseline_fork_city_id","user_id","fork_city_kind") REFERENCES "public"."cities"("id","user_id","kind") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "scenario_runs" ADD CONSTRAINT "scenario_runs_baseline_fork_city_id_unique" UNIQUE("baseline_fork_city_id");--> statement-breakpoint
+ALTER TABLE "scenario_runs" ADD CONSTRAINT "scenario_runs_baseline_isolated" CHECK ("scenario_runs"."baseline_fork_city_id" IS NULL OR ("scenario_runs"."baseline_fork_city_id" <> "scenario_runs"."fork_city_id" AND "scenario_runs"."baseline_fork_city_id" <> "scenario_runs"."base_city_id"));
